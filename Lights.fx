@@ -1,9 +1,5 @@
-﻿// our inputs per model
 matrix World;
-matrix WorldViewProj;       //This is world * view * projection
-
-// our inputs per change in lighting / draw
-
+matrix WorldViewProj;
 float3 CameraPosition;
 float3 SunLightDirection;
 float4 SunLightColor;
@@ -17,9 +13,8 @@ float PointLightIntensity[MAXLIGHT];
 float PointLightRadius[MAXLIGHT];
 int MaxLightsRendered = 0;
 
-//////////////////////////////////////////////////////////////
-
 Texture2D DiffuseTexture;
+
 SamplerState textureSampler
 {
     MinFilter = linear;
@@ -28,9 +23,6 @@ SamplerState textureSampler
     AddressV = Wrap;
 };
 
-///////////////////////////////////////
-
-//The inputs we need from the model
 struct VertexShaderInput
 {
     float4 Position : SV_POSITION0;
@@ -46,10 +38,6 @@ struct VertexShaderOutput
     float3 WorldPos : TEXCOORD1;
 };
 
-////////////////////////////////////////////////////////////////
-
-
-//  Our Vertex Shader
 VertexShaderOutput MainVS(VertexShaderInput input)
 {
     VertexShaderOutput Output;
@@ -69,8 +57,6 @@ VertexShaderOutput MainVS(VertexShaderInput input)
     return Output;
 }
 
-// Our lighting equations
-
 float4 CalcDiffuseLight(float3 normal, float3 lightDirection, float4 lightColor, float lightIntensity)
 {
     return saturate(dot(normal, -lightDirection)) * lightIntensity * lightColor;
@@ -89,13 +75,10 @@ float4 CalcSpecularLight(float3 normal, float3 lightDirection, float3 cameraDire
     return lightIntensity * lightColor * pow(abs(specular), specularPower);
 }
 
-// The squared length of a vector
 float lengthSquared(float3 v1)
 {
     return v1.x * v1.x + v1.y * v1.y + v1.z * v1.z;
 }
-
-//  Our pixel Shader
 
 float4 PS(VertexShaderOutput input) : SV_TARGET
 {
